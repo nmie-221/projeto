@@ -1,0 +1,30 @@
+{
+  "estrutura": "comunidade",
+  "periodo": "mensal",
+  "chaves": ["id_comunidade", "anomes"],
+  "variaveis": [
+    {
+      "nome": "qtd_eventos",
+      "tratamento": "soma_campo",
+      "params": {
+        "campo": "eventos"
+      }
+    },
+    {
+      "nome": "taxa_conclusao",
+      "tratamento": "soma_divisao",
+      "params": {
+        "nominador": "concluidas",
+        "denominador": "total"
+      }
+    },
+    {
+      "nome": "nota_media",
+      "tratamento": "media_campo",
+      "params": {
+        "campo": "nota"
+      }
+    }
+  ],
+  "custom_code": "ajuste_flag_critico"
+}
