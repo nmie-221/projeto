@@ -1,0 +1,52 @@
+{
+  "bloco": "velocidade",
+  "estrutura": "squad",
+  "variaveis": {
+    "qtde_historias_totais": {
+      "funcao": "soma"
+    },
+    "soma_leadtime_totais": {
+      "funcao": "soma"
+    },
+    "leadtime_medio": {
+      "funcao": "media",
+      "params": {
+        "nominador": "soma_leadtime_totais",
+        "denominador": "qtde_historias_totais"
+      }
+    },
+    "qtde_historias_categ_software": {
+      "funcao": "soma"
+    },
+    "soma_leadtime_categ_software": {
+      "funcao": "soma"
+    },
+    "leadtime_medio_categ_software": {
+      "funcao": "media",
+      "params": {
+        "nominador": "soma_leadtime_categ_software",
+        "denominador": "qtde_historias_categ_software"
+      }
+    },
+    "qtde_historias_categ_infra": {
+      "funcao": "soma"
+    },
+    "soma_leadtime_categ_infra": {
+      "funcao": "soma"
+    },
+    "leadtime_medio_categ_infra": {
+      "funcao": "media",
+      "params": {
+        "nominador": "soma_leadtime_categ_infra",
+        "denominador": "qtde_historias_categ_infra"
+      }
+    },
+    "perc_hist_software": {
+      "funcao": "percentual",
+      "params": {
+        "nominador": "qtde_historias_categ_software",
+        "denominador": "qtde_historias_totais"
+      }
+    }
+  }
+}

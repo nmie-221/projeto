@@ -1,0 +1,29 @@
+{
+  "bloco": "bugs",
+  "estrutura": "squad",
+  "variaveis": {
+    "qtde_bugs_totais": {
+      "funcao": "soma"
+    },
+    "qtde_bugs_cancelados": {
+      "funcao": "soma"
+    },
+    "qtde_bugs_corrigidos": {
+      "funcao": "soma"
+    },
+    "perc_bugs_cancelados": {
+      "funcao": "percentual",
+      "params": {
+        "nominador": "qtde_bugs_cancelados",
+        "denominador": "qtde_bugs_totais"
+      }
+    },
+    "perc_bugs_corrigidos": {
+      "funcao": "percentual",
+      "params": {
+        "nominador": "qtde_bugs_corrigidos",
+        "denominador": "qtde_bugs_totais"
+      }
+    }
+  }
+}

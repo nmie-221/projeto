@@ -1,0 +1,168 @@
+# Funções de agregação suportadas e exemplos de configuração JSON
+
+## Funções disponíveis
+
+1. soma
+2. media
+3. percentual
+4. contagem_distinta
+
+---
+
+## Parâmetros necessários para cada função
+
+### 1. soma
+- Parâmetros obrigatórios no JSON:
+  - "funcao": "soma"
+  - Exemplo:
+    "variavel_x": { "funcao": "soma" }
+
+### 2. media
+- Parâmetros obrigatórios no JSON:
+  - "funcao": "media"
+  - "params":
+      - "nominador": <nome_coluna_nominador>
+      - "denominador": <nome_coluna_denominador>
+- Exemplo:
+    "variavel_media": {
+      "funcao": "media",
+      "params": {
+        "nominador": "coluna_nominador",
+        "denominador": "coluna_denominador"
+      }
+    }
+
+### 3. percentual
+- Parâmetros obrigatórios no JSON:
+  - "funcao": "percentual"
+  - "params":
+      - "nominador": <nome_coluna_nominador>
+      - "denominador": <nome_coluna_denominador>
+- Exemplo:
+    "variavel_percentual": {
+      "funcao": "percentual",
+      "params": {
+        "nominador": "coluna_nominador",
+        "denominador": "coluna_denominador"
+      }
+    }
+
+### 4. contagem_distinta
+- Parâmetros obrigatórios no JSON:
+  - "funcao": "contagem_distinta"
+- Exemplo:
+    "variavel_distinta": { "funcao": "contagem_distinta" }
+
+---
+
+## Possibilidades de combinação
+
+- Você pode combinar livremente as funções acima em um mesmo bloco JSON, por exemplo:
+
+{
+  "variaveis": {
+    "total_itens": { "funcao": "soma" },
+    "media_valor": {
+      "funcao": "media",
+      "params": { "nominador": "valor_total", "denominador": "qtd" }
+    },
+    "percentual_aprovados": {
+      "funcao": "percentual",
+      "params": { "nominador": "aprovados", "denominador": "total" }
+    },
+    "usuarios_unicos": { "funcao": "contagem_distinta" }
+  }
+}
+
+- É possível ter várias variáveis de cada tipo no mesmo bloco.
+- Os nomes das variáveis são livres, mas os parâmetros devem ser respeitados conforme cada função.
+- Para "media" e "percentual", os campos "nominador" e "denominador" devem existir no DataFrame.
+- Para "contagem_distinta", a variável será agregada usando o número de valores distintos por grupo.
+
+---
+
+## Resumo dos parâmetros obrigatórios por função
+
+| Função             | Parâmetros obrigatórios no JSON           |
+|--------------------|-------------------------------------------|
+| soma               | funcao                                    |
+| media              | funcao, params.nominador, params.denominador |
+| percentual         | funcao, params.nominador, params.denominador |
+| contagem_distinta  | funcao                                    |
+
+---
+
+## Guia para atualizar os arquivos JSON de variáveis no hub
+
+### 1. Localização dos arquivos
+- Os arquivos de configuração JSON ficam na pasta `config_vars/<bloco>/<estrutura>.json`.
+- Exemplo de caminho: `config_vars/bugs/squad.json`
+
+### 2. Estrutura básica do JSON
+```json
+{
+  "variaveis": {
+    "nome_variavel": {
+      "funcao": "soma" | "media" | "percentual" | "contagem_distinta",
+      "params": { ... } // apenas para media e percentual
+    },
+    // ... outras variáveis ...
+  }
+}
+```
+
+### 3. Como adicionar uma nova variável
+- Escolha o bloco e a estrutura corretos.
+- Abra o arquivo `<estrutura>.json` correspondente.
+- No dicionário `"variaveis"`, adicione uma nova entrada seguindo o padrão:
+
+```json
+"nova_variavel": {
+  "funcao": "soma"
+}
+```
+- Para média ou percentual, adicione também o campo `params`:
+
+```json
+"media_valor": {
+  "funcao": "media",
+  "params": { "nominador": "coluna_x", "denominador": "coluna_y" }
+}
+```
+
+### 4. Como alterar uma variável existente
+- Localize a variável no JSON.
+- Altere o valor de `funcao` ou os parâmetros em `params` conforme necessário.
+- Salve o arquivo.
+
+### 5. Como remover uma variável
+- Apague a entrada correspondente à variável dentro do dicionário `"variaveis"`.
+
+### 6. Recomendações de manutenção
+- Sempre valide se os nomes das colunas usados em `params` existem no DataFrame de entrada.
+- Mantenha o padrão de indentação e aspas duplas no JSON.
+- Faça backup dos arquivos antes de grandes alterações.
+- Documente variáveis novas ou alteradas em um changelog, se possível.
+
+### 7. Exemplo completo de bloco JSON
+```json
+{
+  "variaveis": {
+    "total_itens": { "funcao": "soma" },
+    "media_valor": {
+      "funcao": "media",
+      "params": { "nominador": "valor_total", "denominador": "qtd" }
+    },
+    "percentual_aprovados": {
+      "funcao": "percentual",
+      "params": { "nominador": "aprovados", "denominador": "total" }
+    },
+    "usuarios_unicos": { "funcao": "contagem_distinta" }
+  }
+}
+```
+
+---
+
+Se tiver dúvidas, consulte o help da classe ou peça suporte ao responsável pelo hub.
+
