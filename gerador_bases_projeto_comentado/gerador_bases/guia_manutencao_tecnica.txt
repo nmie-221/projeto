@@ -1,64 +1,36 @@
-# Funções de agregação suportadas e exemplos de configuração JSON
+# ============================================================
+#  Guia Rápido de Manutenção dos JSONs de Variáveis do Hub   #
+# ============================================================
 
-## Funções disponíveis
-
-1. soma
-2. media
-3. percentual
-4. contagem_distinta
+Este guia foi feito para facilitar a vida de quem vai atualizar, criar ou remover variáveis nos arquivos de configuração do hub. Siga o passo a passo e consulte os exemplos sempre que precisar!
 
 ---
 
-## Parâmetros necessários para cada função
+## ===================== Funções de agregação disponíveis =====================
 
-### 1. soma
-- Parâmetros obrigatórios no JSON:
-  - "funcao": "soma"
-  - Exemplo:
-    "variavel_x": { "funcao": "soma" }
-
-### 2. media
-- Parâmetros obrigatórios no JSON:
-  - "funcao": "media"
-  - "params":
-      - "nominador": <nome_coluna_nominador>
-      - "denominador": <nome_coluna_denominador>
-- Exemplo:
-    "variavel_media": {
-      "funcao": "media",
-      "params": {
-        "nominador": "coluna_nominador",
-        "denominador": "coluna_denominador"
-      }
-    }
-
-### 3. percentual
-- Parâmetros obrigatórios no JSON:
-  - "funcao": "percentual"
-  - "params":
-      - "nominador": <nome_coluna_nominador>
-      - "denominador": <nome_coluna_denominador>
-- Exemplo:
-    "variavel_percentual": {
-      "funcao": "percentual",
-      "params": {
-        "nominador": "coluna_nominador",
-        "denominador": "coluna_denominador"
-      }
-    }
-
-### 4. contagem_distinta
-- Parâmetros obrigatórios no JSON:
-  - "funcao": "contagem_distinta"
-- Exemplo:
-    "variavel_distinta": { "funcao": "contagem_distinta" }
+- **soma**: soma simples dos valores.
+- **media**: média customizada (soma do nominador dividido pela soma do denominador).
+- **percentual**: percentual customizado (soma do nominador dividido pela soma do denominador).
+- **contagem_distinta**: conta quantos valores diferentes existem para aquela variável.
 
 ---
 
-## Possibilidades de combinação
+## =============== Parâmetros obrigatórios para cada função ===============
 
-- Você pode combinar livremente as funções acima em um mesmo bloco JSON, por exemplo:
+| Função             | Parâmetros obrigatórios no JSON           |
+|--------------------|-------------------------------------------|
+| soma               | funcao                                    |
+| media              | funcao, params.nominador, params.denominador |
+| percentual         | funcao, params.nominador, params.denominador |
+| contagem_distinta  | funcao                                    |
 
+Veja exemplos práticos abaixo!
+
+---
+
+## =================== Exemplos de configuração no JSON ===================
+
+```json
 {
   "variaveis": {
     "total_itens": { "funcao": "soma" },
@@ -73,53 +45,27 @@
     "usuarios_unicos": { "funcao": "contagem_distinta" }
   }
 }
+```
 
-- É possível ter várias variáveis de cada tipo no mesmo bloco.
-- Os nomes das variáveis são livres, mas os parâmetros devem ser respeitados conforme cada função.
+- Você pode misturar quantas variáveis quiser, de qualquer tipo.
+- Os nomes das variáveis são livres, mas os parâmetros devem ser respeitados.
 - Para "media" e "percentual", os campos "nominador" e "denominador" devem existir no DataFrame.
 - Para "contagem_distinta", a variável será agregada usando o número de valores distintos por grupo.
 
 ---
 
-## Resumo dos parâmetros obrigatórios por função
+## ===================== Passo a passo para manutenção =====================
 
-| Função             | Parâmetros obrigatórios no JSON           |
-|--------------------|-------------------------------------------|
-| soma               | funcao                                    |
-| media              | funcao, params.nominador, params.denominador |
-| percentual         | funcao, params.nominador, params.denominador |
-| contagem_distinta  | funcao                                    |
+### 1. Onde ficam os arquivos?
+- Os arquivos JSON estão em `config_vars/<bloco>/<estrutura>.json`.
+- Exemplo: `config_vars/bugs/squad.json`
 
----
-
-## Guia para atualizar os arquivos JSON de variáveis no hub
-
-### 1. Localização dos arquivos
-- Os arquivos de configuração JSON ficam na pasta `config_vars/<bloco>/<estrutura>.json`.
-- Exemplo de caminho: `config_vars/bugs/squad.json`
-
-### 2. Estrutura básica do JSON
-```json
-{
-  "variaveis": {
-    "nome_variavel": {
-      "funcao": "soma" | "media" | "percentual" | "contagem_distinta",
-      "params": { ... } // apenas para media e percentual
-    },
-    // ... outras variáveis ...
-  }
-}
-```
-
-### 3. Como adicionar uma nova variável
-- Escolha o bloco e a estrutura corretos.
-- Abra o arquivo `<estrutura>.json` correspondente.
-- No dicionário `"variaveis"`, adicione uma nova entrada seguindo o padrão:
+### 2. Como adicionar uma nova variável?
+- Abra o arquivo do bloco/estrutura desejado.
+- No dicionário `"variaveis"`, adicione uma nova entrada:
 
 ```json
-"nova_variavel": {
-  "funcao": "soma"
-}
+"nova_variavel": { "funcao": "soma" }
 ```
 - Para média ou percentual, adicione também o campo `params`:
 
@@ -130,39 +76,23 @@
 }
 ```
 
-### 4. Como alterar uma variável existente
+### 3. Como alterar uma variável existente?
 - Localize a variável no JSON.
 - Altere o valor de `funcao` ou os parâmetros em `params` conforme necessário.
 - Salve o arquivo.
 
-### 5. Como remover uma variável
+### 4. Como remover uma variável?
 - Apague a entrada correspondente à variável dentro do dicionário `"variaveis"`.
-
-### 6. Recomendações de manutenção
-- Sempre valide se os nomes das colunas usados em `params` existem no DataFrame de entrada.
-- Mantenha o padrão de indentação e aspas duplas no JSON.
-- Faça backup dos arquivos antes de grandes alterações.
-- Documente variáveis novas ou alteradas em um changelog, se possível.
-
-### 7. Exemplo completo de bloco JSON
-```json
-{
-  "variaveis": {
-    "total_itens": { "funcao": "soma" },
-    "media_valor": {
-      "funcao": "media",
-      "params": { "nominador": "valor_total", "denominador": "qtd" }
-    },
-    "percentual_aprovados": {
-      "funcao": "percentual",
-      "params": { "nominador": "aprovados", "denominador": "total" }
-    },
-    "usuarios_unicos": { "funcao": "contagem_distinta" }
-  }
-}
-```
 
 ---
 
-Se tiver dúvidas, consulte o help da classe ou peça suporte ao responsável pelo hub.
+## ======================== Dicas de manutenção ========================
+- Sempre confira se os nomes das colunas usados em `params` existem no DataFrame.
+- Use sempre aspas duplas e mantenha a indentação para facilitar a leitura.
+- Faça backup dos arquivos antes de grandes alterações.
+- Se possível, registre mudanças importantes em um changelog.
+
+---
+
+Se ficar com dúvida, consulte o help da classe (`gerador.help()`) ou fale com o responsável pelo hub. Bom trabalho!
 
